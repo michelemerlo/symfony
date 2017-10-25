@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}Details{% endblock %}
+{% block body %}
+    <h2 class="list-group">{{list.vorname}} {{list.nachname}}</h2>
+    
+    <ul class="list-group">
+        {% if img %}
+        <li class="list-group-item">
+        <img id='detailimg' src="{{asset(img, 'uploaded_files')}}" alt="Bild zum Benutzer nicht verfügbar">
+        </li>
+        {% else %}
+       <div id='noimg'>
+           <p id='pnoimg'> Noch kein Bild hinzugefügt</p>
+       </div>
+    {% endif %}
+    <br>
+        <li class="list-group-item">Vorname: {{list.vorname}}</li>
+        <li class="list-group-item">Nachname: {{list.nachname}}</li>
+        <li class="list-group-item">Strasse: {{list.strasse}}</li>
+        <li class="list-group-item">Ort: {{list.ort}}</li>
+        <li class="list-group-item">PLZ: {{list.plz}}</li>
+        <li class="list-group-item">Beschreibung: {{list.beschreibung}}</li>       
+        <li class="list-group-item"><a href="{{ path('edit',{'id':list.id})}}" class="btn btn-info">Bearbeiten</a> <a href="{{ path('homepage')}}" class="btn btn-primary">Zurück</a></li>
+    </ul>
+{% endblock %} 

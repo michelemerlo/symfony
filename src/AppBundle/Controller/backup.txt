@@ -1,0 +1,172 @@
+<?php
+
+namespace AppBundle\Controller;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Users;
+use AppBundle\Entity\Login;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\HttpFoundation\Session\Session;
+
+class DefaultController extends Controller
+{ 
+    /**
+     * @Route("/", name="homepage")
+     */
+    public function indexAction(Request $request)
+    {
+        $users = new Users();
+        $userssrc = null;
+        $name = null;
+        $defaultData = ['message' => 'wut'];
+        $formsearch = $this->createFormBuilder($defaultData)
+                 ->add('Suche', TextType::class, ['label'=>'Suche', 'attr'=>['class'=>'form-control', 'style'=>'margin-bottom:0.5cm; width:50%;']]) 
+                 ->add('submit', SubmitType::class, ['label'=>'suchen','attr'=>['class'=>'btn btn-primary']])
+                 ->add('Zurücksetzten', SubmitType::class, ['label'=>'zurücksetzten', 'attr'=>  ['class'=>'btn btn-default']])
+                 ->getForm();
+         $formsearch->handleRequest($request);
+         if($formsearch->isSubmitted() && $formsearch->isValid()){
+            $name = $formsearch['Suche']->getData();
+            dump($name);
+            $em=$this->getDoctrine()->getManager();
+            $query = $em->createQuery(
+                'SELECT u 
+                 FROM AppBundle:Users u
+                 WHERE u.vorname = :name
+                 OR u.nachname = :name')->setParameter('name', $name);
+            $userssrc = $query->getResult();
+            
+            if ($formsearch->get('Zurücksetzten')->isClicked()){
+                $textsa = 'Zurücksetzten geklickt';
+                dump($textsa);
+                return $this->redirectToRoute('homepage');
+            }
+                  
+         }
+        else{
+            $vae = 'failed form submission';
+            dump($vae);
+        }
+        //Zieht die Einträge aus der DB
+        $liste = $this->getDoctrine()
+                ->getRepository('AppBundle:Users')
+                ->findAll();
+        // Gibt index.html.twig aus mit der Variabel liste, in der die DB-Einträge hinterlegt sind
+        return $this->render('main/index.html.twig', ['liste'=>$liste, 'form'=>$formsearch->createView(), 'userssrc'=>$userssrc]); 
+    }
+    
+    /**
+     * @Route("/anmelden", name="anmelden")
+     */
+     public function anmeldenAction(Request $request){
+         $login = new Login();
+         $form = $this->createFormBuilder($login)
+                 ->add('Name', TextType::class, ['label'=>'Benutzername', 'attr'=>['class'=>'form-control', 'style'=>'margin-bottom:0.5cm; width:50%;']])
+                 ->add('Passwort', PasswordType::class, ['attr'=>['class'=>'form-control', 'style'=>'margin-bottom:1.0cm; width:50%;']])
+                 ->add('Anmelden', SubmitType::class, ['attr'=>['class'=>'btn btn-primary']])
+                 ->getForm();
+         
+         $form->handleRequest($request);
+         if($form->isSubmitted()){
+             $name = $form['Name']->getData();
+             $passwort = $form['Passwort']->getData();
+             $em=$this->getDoctrine()->getManager();
+             $query = $em->createQuery(
+                'SELECT l.passwort 
+                 FROM AppBundle:Login l
+                 WHERE l.name = :name
+                ')->setParameter('name', $name);
+            $login_rslt_pwd = $query->getResult();
+            $login_rslt_pwd_2 = $login_rslt_pwd[0];
+            $passwort_login = $login_rslt_pwd_2['passwort'];
+            dump($passwort_login);
+            if ($passwort = $passwort_login){
+                dump('login erfolgreich');
+                $session = new Session();
+                $session->set('name', $name);
+                $session->start();
+                dump($session);
+            }
+           
+        }
+        return $this->render('main/anmelden.html.twig', ['form'=>$form->createView()]); 
+     }
+     /**
+     * @Route("/details/{id}", name="details")
+     */
+     public function detailAction($id)
+    {
+        $listen = $this->getDoctrine()
+                ->getRepository('AppBundle:Users')
+                ->find($id);
+        
+        
+        return $this->render('main/details.html.twig', ['listen'=>$listen]); 
+    }
+    /**
+     * @Route("/bearbeiten/{id}", name="edit")
+     */
+     public function editAction($id, Request $request){
+         //Daten aus der Datenbank mit $id
+          $listen = $this->getDoctrine()
+                ->getRepository('AppBundle:Users')
+                ->find($id);
+        //Variabeln vom passende Eintrag werden geholt und gesetzt
+        $listen->setVorname($listen->getVorname());
+        $listen->setNachname($listen->getNachname());
+        $listen->setStrasse($listen->getStrasse());
+        $listen->setOrt($listen->getOrt());
+        $listen->setPLZ($listen->getPLZ());
+        $listen->setBeschreibung($listen->getBeschreibung());
+        
+        //Formular wird erstellt
+        $form = $this->createFormBuilder($listen)
+                ->add('vorname', TextType::class, ['attr'=>['class'=>'form-control', 'style'=>'margin-bottom:0.5cm; width:50%;']])
+                ->add('nachname', TextType::class, ['attr'=>['class'=>'form-control', 'style'=>'margin-bottom:0.5cm; width:50%;']])
+                ->add('strasse', TextType::class, ['attr'=>['class'=>'form-control', 'style'=>'margin-bottom:0.5cm; width:50%;']])
+                ->add('ort', TextType::class, ['attr'=>['class'=>'form-control', 'style'=>'margin-bottom:0.5cm; width:50%;']])
+                ->add('plz', TextType::class, ['attr'=>['class'=>'form-control', 'style'=>'margin-bottom:0.5cm; width:50%;']])
+                ->add('beschreibung', TextType::class, ['attr'=>['class'=>'form-control', 'style'=>'margin-bottom:0.5cm; width:50%;']])
+                ->add('save', SubmitType::class, ['label'=>'Speichern', 'attr'=>['class'=>'btn btn-primary']])
+                ->getForm();
+        
+        $form->handleRequest($request);
+        //Falls die Form valid ist....
+        if($form->isSubmitted()){
+            //Daten aus der Form in Variabeln sichern
+             $vorname = $form['vorname']->getData();
+             $nachname = $form['nachname']->getData();
+             $strasse = $form['strasse']->getData();
+             $ort = $form['ort']->getData();
+             $plz = $form['plz']->getData();
+             $beschreibung = $form['beschreibung']->getData();
+                          
+             //Doctrine aktivieren
+             $em=$this->getDoctrine()->getManager();
+             $listen = $em->getRepository('AppBundle:Users');
+             //Führt den Befehl in der DB aus
+             $em->flush();
+             
+             return $this->redirectToRoute('homepage');
+         }
+        
+        return $this->render('main/edit.html.twig', ['listen'=>$listen, 'form'=>$form->createView()]); 
+     }
+     /**
+     * @Route("/loeschen/{id}", name="delete")
+     */
+     public function deleteAction($id){
+        //Doctrine aktivieren
+             $em=$this->getDoctrine()->getManager();
+             $listen = $em->getRepository('AppBundle:Users')->find($id);
+             
+             $em->remove($listen);
+             //Führt den Befehl in der DB aus
+             $em->flush();
+             return $this->redirectToRoute('homepage');          
+     } 
+}

@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+{% block title %}Neuer Eintrag{% endblock %}
+{% block body %}
+    <h2 class="list-group">Neuer Eintrag</h2>
+    {{ form_start(form)}}
+    {{ form_widget(form)}}
+    {{ form_widget(form.beschreibung, {'required': false})}}
+    {{ form_end(form)}}
+{% endblock %} 

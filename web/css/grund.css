@@ -1,0 +1,82 @@
+/* 
+    Created on : 14.09.2017, 07:09:12
+    Author     : michelemerlo
+*/
+/*base.html.twig */
+body {
+    padding-top: 50px;
+}
+@media (min-width: 1200px) {
+    .container{
+        width: 1300px;
+    }
+}
+.starter-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+/*details.html.twig*/
+#form_Zurücksetzen{
+    display: inline;
+}
+
+#form_submit{
+    display: inline;
+}
+#form_Suche, label {
+    display: inline;
+    padding-right: 10px;
+}
+#form_Suche {
+    display: inline;
+}
+.usrimg{
+    width: 60%;
+    height: auto;
+    border: 5px ridge lightcyan;
+}
+/*anmelden.html.twig */
+#username {
+    width: 50%;  
+}
+#lblname{
+    margin-left: 0.5%;
+}
+#passwort {
+    width: 50%;
+    margin-left: 5.5%;
+}
+#lblpwd {
+    margin-left: 0.5%;
+}
+#logindiv{
+    width: 600px;
+}
+
+/*edit.html.twig*/
+.editimg{
+    width: 20%;
+    height: auto;
+    border: 5px ridge lightcyan;
+}
+#noimg{
+    width: 30%;
+    border: 5px ridge lightcyan;
+}
+#pnoimg{
+    text-align: center;
+    margin: 5%;
+}
+/*details.html.twig*/
+#detailimg{
+    width: 20%;
+    height: auto;
+    border: 5px ridge lightcyan;
+}
+#pnoimg{
+    text-align: center;
+    margin: 5%;
+}
+/*index.html.twig*/
+#form_beschreibung{
+}

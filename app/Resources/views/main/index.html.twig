@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Personeneinträge{% endblock %}
+{% block body %}
+<div class='container'>
+<h1>Personeneinträge</h1>
+<form class='form-inline' method="post">
+{{ form_start(form)}}
+{{ form_widget(form)}}
+{{ form_end(form)}}
+</form>
+<table class="table table-hover">
+     <thead>
+	 <th>Vorname</th>
+	 <th>Nachname</th>
+	 <th>Strasse</th>
+	 <th>Ort</th>
+	 <th>PLZ</th>
+         <th>Beschreibung</th>
+         <th class='col-md-3'>Bild</th>
+         <th>&nbsp;</th>
+     </thead>
+     <tbody>
+    {% if userssrc is null %}
+        {% for row in list %}
+	 <tr>
+             <td>{{row.vorname}}</td>
+             <td>{{row.nachname}}</td>
+             <td>{{row.strasse}}</td>
+             <td>{{row.ort}}</td>
+             <td>{{row.plz}}</td>
+             <td>{{row.beschreibung}}</td>
+             {% if row.bild %}
+             <td><img class='usrimg' src="{{asset(row.bild, 'uploaded_files')}}" alt="Bild zum Benutzer"></td>
+             {% else %}
+             <td>-</td>
+             {% endif %}
+             <td>
+                 <a href="{{ path('details',{'id':row.id})}}" class="btn btn-success">Details</a> 
+                 <a href="{{ path('edit',{'id':row.id})}}" class="btn btn-info">Bearbeiten</a> 
+                 <a href="{{ path('delete',{'id':row.id})}}" class="btn btn-danger">Löschen</a>
+                 <a href="{{ path('mailrd',{'id':row.id})}}" class="btn btn-default">Als Mail senden</a>  
+             </td>
+        </tr> 
+        {% endfor %}
+    {% else %}
+        {% for row in userssrc %}
+        <tr>
+             <td>{{row.vorname}}</td>
+             <td>{{row.nachname}}</td>
+             <td>{{row.strasse}}</td>
+             <td>{{row.ort}}</td>
+             <td>{{row.plz}}</td>
+             <td>{{row.beschreibung}}</td>
+             <td>
+                 <a href="{{ path('details',{'id':row.id})}}" class="btn btn-success">Details</a> 
+                 <a href="{{ path('edit',{'id':row.id})}}" class="btn btn-info">Bearbeiten</a> 
+                 <a href="{{ path('delete',{'id':row.id})}}" class="btn btn-danger">Löschen</a>        
+             </td>
+        </tr> 
+        {% endfor %}
+    {% endif %}
+     </tbody>
+</table>
+</div>
+{% endblock %}

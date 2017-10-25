@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% block title %}Bearbeiten{% endblock %}
+{% block body %}
+    <h2 class="list-group">Eintrag ändern: {{list.vorname}} {{list.nachname}}</h2>
+    
+    {{ form_start(form, { attr: {novalidate: 'novalidate'}})}}
+    {% if img %}
+    <div>
+        <img class='editimg' src="{{asset(img, 'uploaded_files')}}" alt="Bild zum Benutzer nicht verfügbar">
+    </div>
+    {% else %}
+       <div id='noimg'>
+           <p id='pnoimg'> Noch kein Bild hinzugefügt</p>
+       </div>
+    {% endif %}
+    <br>
+    {{ form_widget(form)}}
+    {{ form_row(form.bild)}}
+    {{ form_end(form)}}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Personeneinträge{% endblock %}
+{% block body %}
+<h3>Mail senden mit Benutzer {{ firstname }} {{ lastname }}</h3>
+ <li class="list-group-item">Vorname: {{user.vorname}}</li>
+        <li class="list-group-item">Nachname: {{user.nachname}}</li>
+        <li class="list-group-item">Strasse: {{user.strasse}}</li>
+        <li class="list-group-item">Ort: {{user.ort}}</li>
+        <li class="list-group-item">PLZ: {{user.plz}}</li>
+        <li class="list-group-item">Beschreibung: {{user.beschreibung}}</li>
+        <br>
+<form class='form-inline' method="post">
+{{ form_start(form)}}
+{{ form_widget(form)}}
+{{ form_end(form)}}
+</form>
+{% endblock %}
+
+

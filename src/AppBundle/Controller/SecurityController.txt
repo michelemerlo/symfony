@@ -1,0 +1,19 @@
+<?php
+namespace AppBundle\Controller;
+/**
+ * Description of SecurityController
+ *
+ * @author michelemerlo
+ * date: 21.09.2017
+ */
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Controller\DefaultController;
+use AppBundle\Controller\SecurityController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use \Symfony\Component\HttpFoundation\Request;
+
+
+class SecurityController extends Controller{ 
+    
+}
+?>
